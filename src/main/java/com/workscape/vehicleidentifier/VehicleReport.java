@@ -3,33 +3,35 @@ package com.workscape.vehicleidentifier;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.workscape.vehicleidentifier.VehicleType;
+
 /**
  * This class represents the result of processing the vehicles (vehicles xml)
  */
 public class VehicleReport {
     //A map keyed by VehicleId, holding the VehicleType identified for each input Vehicle
-    Map<String, Vehicle.VehicleType> identificationResults = new HashMap<String, Vehicle.VehicleType>();
+    Map<String, VehicleType> identificationResults = new HashMap<String, VehicleType>();
 
     //Summary results holding the count of vehicles by VehicleType
-    Map<Vehicle.VehicleType, Integer> summary = new HashMap<Vehicle.VehicleType, Integer>();
+    Map<VehicleType, Integer> summary = new HashMap<VehicleType, Integer>();
 
-    public Map<String, Vehicle.VehicleType> getIdentificationResults() {
+    public Map<String, VehicleType> getIdentificationResults() {
         return identificationResults;
     }
 
-    public void setIdentificationResults(Map<String, Vehicle.VehicleType> identificationResults) {
+    public void setIdentificationResults(Map<String, VehicleType> identificationResults) {
         this.identificationResults = identificationResults;
     }
 
-    public Map<Vehicle.VehicleType, Integer> getSummary() {
+    public Map<VehicleType, Integer> getSummary() {
         return summary;
     }
 
-    public void setSummary(Map<Vehicle.VehicleType, Integer> summary) {
+    public void setSummary(Map<VehicleType, Integer> summary) {
         this.summary = summary;
     }
 
-    public void addIdentificationResult(String vehicleId, Vehicle.VehicleType vehicleType) {
+    public void addIdentificationResult(String vehicleId, VehicleType vehicleType) {
         removeIdentificationResult(vehicleId);
 
         //add identification result for given vehicle-id, and increment summary count
@@ -41,10 +43,10 @@ public class VehicleReport {
     }
 
     public void removeIdentificationResult(String vehicleId) {
-        Vehicle.VehicleType existing = identificationResults.get(vehicleId);
+        VehicleType existing = identificationResults.get(vehicleId);
 
         if(existing == null) {
-            Vehicle.VehicleType vehicleType = identificationResults.get(vehicleId);
+            VehicleType vehicleType = identificationResults.get(vehicleId);
             identificationResults.remove(vehicleId);
 
             Integer count = summary.get(vehicleType);

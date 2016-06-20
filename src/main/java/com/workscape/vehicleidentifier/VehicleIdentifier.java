@@ -208,16 +208,16 @@ public class VehicleIdentifier {
     }
 
     private static void printVehicleReport(VehicleReport report) {
-        Map<String, Vehicle.VehicleType> results = report.getIdentificationResults();
+        Map<String, VehicleType> results = report.getIdentificationResults();
         System.out.println("\nVehicles identified, total " + results.size());
         for(String vehicleId : results.keySet()) {
-            Vehicle.VehicleType vehicleType = results.get(vehicleId);
+            VehicleType vehicleType = results.get(vehicleId);
             System.out.println(vehicleId + " is " + ((vehicleType == null)? "Unknown" : vehicleType));
         }
 
         System.out.println("\nSummary of results");
-        Map<Vehicle.VehicleType, Integer> summary = report.getSummary();
-        for(Vehicle.VehicleType vehicleType : summary.keySet()) {
+        Map<VehicleType, Integer> summary = report.getSummary();
+        for(VehicleType vehicleType : summary.keySet()) {
             System.out.println(((vehicleType == null)? "Unknown" : vehicleType) + " count = " + summary.get(vehicleType));
         }
     }

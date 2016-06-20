@@ -1,10 +1,8 @@
 package com.workscape.vehicleidentifier;
 
 
-import static com.workscape.vehicleidentifier.Vehicle.VehicleType;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
-import static junit.framework.Assert.fail;
 
 import org.junit.Test;
 
@@ -24,12 +22,12 @@ public class VehicleIdentifierTest {
 		VehicleReport report = app.parseVehiclesXmlFile("vehicles.xml");
 
 		//results
-		Map<String, Vehicle.VehicleType> results = report.getIdentificationResults();
+		Map<String, VehicleType> results = report.getIdentificationResults();
 		assertEquals(VehicleType.BIG_WHEEL, results.get("vehicle 1"));
 		assertEquals(VehicleType.BICYCLE, results.get("vehicle 2"));
 
 		//summary
-		Map<Vehicle.VehicleType, Integer> summary = report.getSummary();
+		Map<VehicleType, Integer> summary = report.getSummary();
 		assertEquals(1, summary.get(VehicleType.BIG_WHEEL).intValue());
 		assertEquals(1, summary.get(VehicleType.BICYCLE).intValue());
 		assertNull(summary.get(VehicleType.MOTORCYCLE));
@@ -47,7 +45,7 @@ public class VehicleIdentifierTest {
 		VehicleReport report = app.parseVehiclesXmlFile("vehicles2.xml");
 
 		//results
-		Map<String, Vehicle.VehicleType> results = report.getIdentificationResults();
+		Map<String, VehicleType> results = report.getIdentificationResults();
 		assertEquals(VehicleType.BIG_WHEEL, results.get("vehicle 1"));
 		assertEquals(VehicleType.BICYCLE, results.get("vehicle 2"));
 		assertEquals(VehicleType.MOTORCYCLE, results.get("vehicle 3"));
@@ -57,7 +55,7 @@ public class VehicleIdentifierTest {
 		assertEquals(VehicleType.UNKNOWN, results.get("vehicle 7"));
 
 		//summary
-		Map<Vehicle.VehicleType, Integer> summary = report.getSummary();
+		Map<VehicleType, Integer> summary = report.getSummary();
 		assertEquals(1, summary.get(VehicleType.BIG_WHEEL).intValue());
 		assertEquals(2, summary.get(VehicleType.BICYCLE).intValue());
 		assertEquals(1, summary.get(VehicleType.MOTORCYCLE).intValue());

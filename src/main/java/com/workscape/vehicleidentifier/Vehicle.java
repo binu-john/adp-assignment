@@ -21,49 +21,6 @@ class Vehicle {
         FRONT, REAR, RIGHT_REAR, LEFT_REAR, RIGHT_FRONT, LEFT_FRONT
     }
 
-    public enum VehicleType {
-        BIG_WHEEL(Material.PLASTIC, PowerTrain.HUMAN, Material.PLASTIC,
-                    new WheelPosition[] {WheelPosition.FRONT, WheelPosition.LEFT_REAR, WheelPosition.RIGHT_REAR}),
-        BICYCLE (Material.METAL, PowerTrain.HUMAN, Material.METAL,
-                new WheelPosition[] {WheelPosition.FRONT, WheelPosition.REAR}),
-        MOTORCYCLE (Material.METAL, PowerTrain.INTERNAL_COMBUSTION, Material.METAL,
-                new WheelPosition[] {WheelPosition.FRONT, WheelPosition.REAR}),
-        HANG_GLIDER (Material.PLASTIC, PowerTrain.BERNOULLI, null,
-                new WheelPosition[] {}),
-        CAR (Material.METAL, PowerTrain.INTERNAL_COMBUSTION, null,
-                new WheelPosition[] {WheelPosition.RIGHT_FRONT, WheelPosition.LEFT_FRONT, WheelPosition.RIGHT_REAR, WheelPosition.LEFT_REAR}),
-        UNKNOWN (null, null, null,
-                new WheelPosition[] {});
-
-        private final Material frameMaterial;
-        private final PowerTrain powerTrain;
-        private final Material wheelMaterial;
-        private final WheelPosition[] wheelPositions;
-
-        VehicleType(Material frameMaterial, PowerTrain powerTrain, Material wheelMaterial, WheelPosition[] wheelPositions) {
-            this.frameMaterial = frameMaterial;
-            this.powerTrain = powerTrain;
-            this.wheelMaterial = wheelMaterial;
-            this.wheelPositions = wheelPositions;
-        }
-
-        public Material getFrameMaterial() {
-            return frameMaterial;
-        }
-
-        public PowerTrain getPowerTrain() {
-            return powerTrain;
-        }
-
-        public Material getWheelMaterial() {
-            return wheelMaterial;
-        }
-
-        public WheelPosition[] getWheelPositions() {
-            return wheelPositions;
-        }
-    }
-
     private String id;
     private Material frameMaterial;
     private Map<WheelPosition, Wheel> wheels;
