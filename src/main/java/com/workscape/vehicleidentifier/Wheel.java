@@ -3,7 +3,7 @@ package com.workscape.vehicleidentifier;
 /**
  * Created by Binu on 6/17/2016.
  */
-public class Wheel {
+class Wheel {
     Vehicle.WheelPosition position;
     Vehicle.Material material;
 

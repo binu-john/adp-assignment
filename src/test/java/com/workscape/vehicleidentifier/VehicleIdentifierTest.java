@@ -1,20 +1,68 @@
 package com.workscape.vehicleidentifier;
 
 
+import static com.workscape.vehicleidentifier.Vehicle.VehicleType;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.fail;
 
 import org.junit.Test;
 
+import java.util.Map;
+
 /**
- * Unit test for simple App.
+ * Unit test for VehicleIdentifier.
  */
 public class VehicleIdentifierTest {
 
 	/**
-	 * Rigorous Test :-)
+	 * Test vehicles.xml
 	 */
 	@Test
-	public void testApp() {
-		fail("Replace me with tests");
+	public void testFile() {
+		VehicleIdentifier app = new VehicleIdentifier();
+		VehicleReport report = app.parseVehiclesXmlFile("vehicles.xml");
+
+		//results
+		Map<String, Vehicle.VehicleType> results = report.getIdentificationResults();
+		assertEquals(VehicleType.BIG_WHEEL, results.get("vehicle 1"));
+		assertEquals(VehicleType.BICYCLE, results.get("vehicle 2"));
+
+		//summary
+		Map<Vehicle.VehicleType, Integer> summary = report.getSummary();
+		assertEquals(1, summary.get(VehicleType.BIG_WHEEL).intValue());
+		assertEquals(1, summary.get(VehicleType.BICYCLE).intValue());
+		assertNull(summary.get(VehicleType.MOTORCYCLE));
+		assertNull(summary.get(VehicleType.HANG_GLIDER));
+		assertNull(summary.get(VehicleType.CAR));
+		assertNull(summary.get(VehicleType.UNKNOWN));
+	}
+
+	/**
+	 * Test vehicles2.xml
+	 */
+	@Test
+	public void testFile_Vehicles2Xml() {
+		VehicleIdentifier app = new VehicleIdentifier();
+		VehicleReport report = app.parseVehiclesXmlFile("vehicles2.xml");
+
+		//results
+		Map<String, Vehicle.VehicleType> results = report.getIdentificationResults();
+		assertEquals(VehicleType.BIG_WHEEL, results.get("vehicle 1"));
+		assertEquals(VehicleType.BICYCLE, results.get("vehicle 2"));
+		assertEquals(VehicleType.MOTORCYCLE, results.get("vehicle 3"));
+		assertEquals(VehicleType.HANG_GLIDER, results.get("vehicle 4"));
+		assertEquals(VehicleType.CAR, results.get("vehicle 5"));
+		assertEquals(VehicleType.BICYCLE, results.get("vehicle 6"));
+		assertEquals(VehicleType.UNKNOWN, results.get("vehicle 7"));
+
+		//summary
+		Map<Vehicle.VehicleType, Integer> summary = report.getSummary();
+		assertEquals(1, summary.get(VehicleType.BIG_WHEEL).intValue());
+		assertEquals(2, summary.get(VehicleType.BICYCLE).intValue());
+		assertEquals(1, summary.get(VehicleType.MOTORCYCLE).intValue());
+		assertEquals(1, summary.get(VehicleType.HANG_GLIDER).intValue());
+		assertEquals(1, summary.get(VehicleType.CAR).intValue());
+		assertEquals(1, summary.get(VehicleType.UNKNOWN).intValue());
 	}
 }

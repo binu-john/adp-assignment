@@ -1,10 +1,8 @@
 package com.workscape.vehicleidentifier;
 
-import com.sun.deploy.util.StringUtils;
-
-import javax.xml.namespace.QName;
-import javax.xml.stream.*;
-import javax.xml.stream.events.Characters;
+import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
@@ -12,9 +10,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.net.URL;
+import java.util.Map;
 
 /**
  * Hello world!
@@ -30,55 +27,55 @@ public class VehicleIdentifier {
     private static final String TAG_POSITION = "position";
     private static final String TAG_POWERTRAIN = "powertrain";
 
-	public static void main(String[] args) {
-		System.out.println("Hello World!");
-
-		VehicleIdentifier vehicleIdentifier = new VehicleIdentifier();
-		vehicleIdentifier.parseVehiclesXmlFile("vehicles.xml");
-	}
-
-	public void parseVehiclesXmlFile(String filename) {
-		try {
-            File file = new File(getClass().getClassLoader().getResource(filename).getFile());
-			parseVehiclesXml(new FileInputStream(file));
-
-		} catch (FileNotFoundException e) {
+    public VehicleReport parseVehiclesXmlFile(String filename) {
+        VehicleReport report = null;
+        try {
+            FileInputStream fileInputStream;
+            try {
+                fileInputStream = new FileInputStream(filename);
+            } catch(FileNotFoundException e) {
+                URL resource = getClass().getClassLoader().getResource(filename);
+                if(resource == null) {
+                    throw new FileNotFoundException("ERROR: file not found");
+                }
+                fileInputStream = new FileInputStream(new File(resource.getFile()));
+            }
+			report = parseVehiclesXml(fileInputStream);
+        } catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (XMLStreamException e) {
 			e.printStackTrace();
 		}
+        return report;
 	}
 
-    public List<Vehicle> parseVehiclesXml(InputStream in) throws XMLStreamException {
-        List<Vehicle> vehicles = new ArrayList<Vehicle>();
+    public VehicleReport parseVehiclesXml(InputStream in) throws XMLStreamException {
         XMLInputFactory factory = XMLInputFactory.newInstance();
         XMLEventReader reader = factory.createXMLEventReader(in);
 
+        Vehicle vehicle;
+        VehicleReport report = new VehicleReport();
         while (reader.hasNext()) {
             XMLEvent event = reader.nextEvent();
-            printEventType(event.getEventType());
 
             if(event.getEventType() == XMLEvent.START_ELEMENT) {
                 StartElement element = event.asStartElement();
                 if(TAG_VEHICLE.equalsIgnoreCase(element.getName().getLocalPart())) {
-                    vehicles.add(parseVehicle(element, reader));
+                    vehicle = parseVehicle(element, reader);
+                    report.addIdentificationResult(vehicle.getId(), vehicle.findVehicleType());
                 }
             }
         }
 
-        System.out.println("Vehicles=" + Arrays.toString(vehicles.toArray()) + "");
-        return vehicles;
+        return report;
     }
 
     private Vehicle parseVehicle(StartElement startElement, XMLEventReader reader) throws XMLStreamException {
         Vehicle vehicle = new Vehicle();
         boolean inIdTag = false;
-        System.out.println("====Vehicle start");
 
         while (reader.hasNext()) {
             XMLEvent event = reader.nextEvent();
-            printEventType(event.getEventType());
-            System.out.println(event);
 
             if(event.getEventType() == XMLEvent.START_ELEMENT) {
                 StartElement element = event.asStartElement();
@@ -103,7 +100,6 @@ public class VehicleIdentifier {
             }
         }
 
-        System.out.println("====Vehicle end");
         return vehicle;
     }
 
@@ -111,12 +107,8 @@ public class VehicleIdentifier {
         Vehicle.Material frameMaterial = null;
         boolean inMaterialTag = false;
 
-        System.out.println("====Frame start");
-
         while (reader.hasNext()) {
             XMLEvent event = reader.nextEvent();
-            printEventType(event.getEventType());
-            System.out.println(event);
 
             if(event.getEventType() == XMLEvent.START_ELEMENT) {
                 StartElement element = event.asStartElement();
@@ -138,19 +130,15 @@ public class VehicleIdentifier {
             }
         }
 
-        System.out.println("====Frame end");
         return frameMaterial;
     }
 
     private Wheel parseWheel(StartElement startElement, XMLEventReader reader) throws XMLStreamException {
         Wheel wheel = new Wheel();
         boolean inPositionTag = false, inMaterialTag = false;
-        System.out.println("====Wheel start");
 
         while (reader.hasNext()) {
             XMLEvent event = reader.nextEvent();
-            printEventType(event.getEventType());
-            System.out.println(event);
 
             if(event.getEventType() == XMLEvent.START_ELEMENT) {
                 StartElement element = event.asStartElement();
@@ -178,18 +166,14 @@ public class VehicleIdentifier {
             }
         }
 
-        System.out.println("====Wheel end");
         return wheel;
     }
 
     private Vehicle.PowerTrain parsePowerTrain(StartElement startElement, XMLEventReader reader) throws XMLStreamException {
         Vehicle.PowerTrain powerTrain = null;
-        System.out.println("====Powertrain start");
 
         while (reader.hasNext()) {
             XMLEvent event = reader.nextEvent();
-            printEventType(event.getEventType());
-            System.out.println(event);
 
             if(event.getEventType() == XMLEvent.START_ELEMENT) {
                 String elementName = event.asStartElement().getName().getLocalPart();
@@ -200,7 +184,6 @@ public class VehicleIdentifier {
             }
         }
 
-        System.out.println("====Powwertrain end");
         return powerTrain;
     }
 
@@ -208,49 +191,34 @@ public class VehicleIdentifier {
         return in.toUpperCase().replace(' ', '_');
     }
 
-    public static final String getEventTypeString(int eventType) {
-        switch (eventType) {
-            case XMLEvent.START_ELEMENT:
-                return "START_ELEMENT";
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //Main
 
-            case XMLEvent.END_ELEMENT:
-                return "END_ELEMENT";
+    public static void main(String[] args) {
+        String filename = "vehicles.xml";
+        if(args.length > 0) {
+            filename = args[0];
+        }
+        System.out.println("Processing vehicles xml file : " + filename);
 
-            case XMLEvent.PROCESSING_INSTRUCTION:
-                return "PROCESSING_INSTRUCTION";
+        VehicleIdentifier vehicleIdentifier = new VehicleIdentifier();
+        VehicleReport report = vehicleIdentifier.parseVehiclesXmlFile(filename);
+        System.out.println("Finished processing xml");
+        printVehicleReport(report);
+    }
 
-            case XMLEvent.CHARACTERS:
-                return "CHARACTERS";
-
-            case XMLEvent.COMMENT:
-                return "COMMENT";
-
-            case XMLEvent.START_DOCUMENT:
-                return "START_DOCUMENT";
-
-            case XMLEvent.END_DOCUMENT:
-                return "END_DOCUMENT";
-
-            case XMLEvent.ENTITY_REFERENCE:
-                return "ENTITY_REFERENCE";
-
-            case XMLEvent.ATTRIBUTE:
-                return "ATTRIBUTE";
-
-            case XMLEvent.DTD:
-                return "DTD";
-
-            case XMLEvent.CDATA:
-                return "CDATA";
+    private static void printVehicleReport(VehicleReport report) {
+        Map<String, Vehicle.VehicleType> results = report.getIdentificationResults();
+        System.out.println("\nVehicles identified, total " + results.size());
+        for(String vehicleId : results.keySet()) {
+            Vehicle.VehicleType vehicleType = results.get(vehicleId);
+            System.out.println(vehicleId + " is " + ((vehicleType == null)? "Unknown" : vehicleType));
         }
 
-        return "UNKNOWN_EVENT_TYPE";
+        System.out.println("\nSummary of results");
+        Map<Vehicle.VehicleType, Integer> summary = report.getSummary();
+        for(Vehicle.VehicleType vehicleType : summary.keySet()) {
+            System.out.println(((vehicleType == null)? "Unknown" : vehicleType) + " count = " + summary.get(vehicleType));
+        }
     }
-
-    private static void printEventType(int eventType) {
-        System.out.print("EVENT TYPE(" + eventType + "):");
-        System.out.println(getEventTypeString(eventType));
-    }
-
-
 }
