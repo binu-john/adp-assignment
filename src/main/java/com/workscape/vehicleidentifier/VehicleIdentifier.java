@@ -14,8 +14,8 @@ import java.net.URL;
 import java.util.Map;
 
 /**
- * Hello world!
- * 
+ * VehicleIdentifier parses an xml file or input stream for Vehicles, identifies the vehicle type of each vehicle,
+ * and returns a report.
  */
 public class VehicleIdentifier {
 
@@ -27,28 +27,34 @@ public class VehicleIdentifier {
     private static final String TAG_POSITION = "position";
     private static final String TAG_POWERTRAIN = "powertrain";
 
-    public VehicleReport parseVehiclesXmlFile(String filename) {
-        VehicleReport report = null;
+    /**
+     * Given the filename (or full file path), reads and parses xml file for Vehicles and returns report
+     * @param filename
+     * @return VehicleReport
+     * @throws FileNotFoundException
+     * @throws XMLStreamException
+     */
+    public VehicleReport parseVehiclesXmlFile(String filename) throws FileNotFoundException, XMLStreamException {
+        FileInputStream fileInputStream;
         try {
-            FileInputStream fileInputStream;
-            try {
-                fileInputStream = new FileInputStream(filename);
-            } catch(FileNotFoundException e) {
-                URL resource = getClass().getClassLoader().getResource(filename);
-                if(resource == null) {
-                    throw new FileNotFoundException("ERROR: file not found");
-                }
-                fileInputStream = new FileInputStream(new File(resource.getFile()));
+            fileInputStream = new FileInputStream(filename);
+        } catch(FileNotFoundException e) {
+            URL resource = getClass().getClassLoader().getResource(filename);
+            if(resource == null) {
+                throw new FileNotFoundException("ERROR: file not found");
             }
-			report = parseVehiclesXml(fileInputStream);
-        } catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (XMLStreamException e) {
-			e.printStackTrace();
-		}
-        return report;
+            fileInputStream = new FileInputStream(new File(resource.getFile()));
+        }
+
+        return parseVehiclesXml(fileInputStream);
 	}
 
+    /**
+     * Given the filename (or full file path), reads and parses xml file for Vehicles and returns VehicleReport
+     * @param in
+     * @return VehicleReport
+     * @throws XMLStreamException
+     */
     public VehicleReport parseVehiclesXml(InputStream in) throws XMLStreamException {
         XMLInputFactory factory = XMLInputFactory.newInstance();
         XMLEventReader reader = factory.createXMLEventReader(in);
@@ -70,6 +76,14 @@ public class VehicleIdentifier {
         return report;
     }
 
+    /**
+     * This function is called when the Vehicle start-element is encountered. The function reads subsequent elements
+     * from the reader util a Vehicle end-element is encountered. The function creates and returns a Vehicle object.
+     * @param startElement Vehicle start-element passed to allow function to read attributes (not used now)
+     * @param reader xml reader passed to read all xml elements until Vehicle end-element is encountered
+     * @return Vehicle
+     * @throws XMLStreamException
+     */
     private Vehicle parseVehicle(StartElement startElement, XMLEventReader reader) throws XMLStreamException {
         Vehicle vehicle = new Vehicle();
         boolean inIdTag = false;
@@ -103,6 +117,14 @@ public class VehicleIdentifier {
         return vehicle;
     }
 
+    /**
+     * This function is called when the Frame start-element is encountered in the Vehicle block. The function returns
+     * Vehicle.Material used for the frame.
+     * @param startElement Frame start-element passed to allow function to read attributes (not used now)
+     * @param reader xml reader passed to read all xml elements until Frame end-element is encountered
+     * @return Vehicle.Material
+     * @throws XMLStreamException
+     */
     private Vehicle.Material parseFrame(StartElement startElement, XMLEventReader reader) throws XMLStreamException {
         Vehicle.Material frameMaterial = null;
         boolean inMaterialTag = false;
@@ -133,6 +155,14 @@ public class VehicleIdentifier {
         return frameMaterial;
     }
 
+    /**
+     * This function is called when the Wheel start-element is encountered in the Vehicle block. The function returns
+     * Wheel object.
+     * @param startElement Wheel start-element passed to allow function to read attributes (not used now)
+     * @param reader xml reader passed to read all xml elements until Wheel end-element is encountered
+     * @return Wheel
+     * @throws XMLStreamException
+     */
     private Wheel parseWheel(StartElement startElement, XMLEventReader reader) throws XMLStreamException {
         Wheel wheel = new Wheel();
         boolean inPositionTag = false, inMaterialTag = false;
@@ -169,6 +199,14 @@ public class VehicleIdentifier {
         return wheel;
     }
 
+    /**
+     * This function is called when the PowerTrain start-element is encountered in the Vehicle block. The function returns
+     * PowerTrain enum.
+     * @param startElement PowerTrain start-element passed to allow function to read attributes (not used now)
+     * @param reader xml reader passed to read all xml elements until PowerTrain end-element is encountered
+     * @return Vehicle.PowerTrain
+     * @throws XMLStreamException
+     */
     private Vehicle.PowerTrain parsePowerTrain(StartElement startElement, XMLEventReader reader) throws XMLStreamException {
         Vehicle.PowerTrain powerTrain = null;
 
@@ -187,6 +225,11 @@ public class VehicleIdentifier {
         return powerTrain;
     }
 
+    /**
+     * Utility function to convert xml data string to enum value
+     * @param in
+     * @return String
+     */
     private String toEnumStr(String in) {
         return in.toUpperCase().replace(' ', '_');
     }
@@ -202,7 +245,15 @@ public class VehicleIdentifier {
         System.out.println("Processing vehicles xml file : " + filename);
 
         VehicleIdentifier vehicleIdentifier = new VehicleIdentifier();
-        VehicleReport report = vehicleIdentifier.parseVehiclesXmlFile(filename);
+        VehicleReport report = null;
+        try {
+            report = vehicleIdentifier.parseVehiclesXmlFile(filename);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (XMLStreamException e) {
+            e.printStackTrace();
+        }
+
         System.out.println("Finished processing xml");
         printVehicleReport(report);
     }

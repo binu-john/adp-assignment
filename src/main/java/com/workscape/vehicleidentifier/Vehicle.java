@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by Binu on 6/17/2016.
+ * Class represents Vehicle and its components
  */
 class Vehicle {
 
@@ -82,6 +82,11 @@ class Vehicle {
                 .toString();
     }
 
+    /**
+     * Given a VeehicleType, this function checks is this vehicle matches with the same.
+     * @param vehicleType
+     * @return boolean
+     */
     private boolean doesVehicleMatch(VehicleType vehicleType) {
         boolean match = true;
 
@@ -109,6 +114,10 @@ class Vehicle {
         return match;
     }
 
+    /**
+     * Iterates through the configured VehicleTypes and finds a match for this vehicle. If match not found, returns VehicleType.UNKNOWN
+     * @return VehicleType
+     */
     public VehicleType findVehicleType() {
         VehicleType type = VehicleType.UNKNOWN;
 

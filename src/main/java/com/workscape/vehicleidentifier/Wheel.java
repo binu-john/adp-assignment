@@ -1,7 +1,7 @@
 package com.workscape.vehicleidentifier;
 
 /**
- * Created by Binu on 6/17/2016.
+ * Wheel class
  */
 class Wheel {
     Vehicle.WheelPosition position;

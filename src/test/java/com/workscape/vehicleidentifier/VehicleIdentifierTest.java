@@ -3,9 +3,12 @@ package com.workscape.vehicleidentifier;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
+import javax.xml.stream.XMLStreamException;
+import java.io.FileNotFoundException;
 import java.util.Map;
 
 /**
@@ -17,9 +20,16 @@ public class VehicleIdentifierTest {
 	 * Test vehicles.xml
 	 */
 	@Test
-	public void testFile() {
+	public void testFile_VehiclesXml() {
 		VehicleIdentifier app = new VehicleIdentifier();
-		VehicleReport report = app.parseVehiclesXmlFile("vehicles.xml");
+		VehicleReport report = null;
+		try {
+			report = app.parseVehiclesXmlFile("vehicles.xml");
+		} catch (FileNotFoundException e) {
+			fail("FileNotFoundException: XML file not found.");
+		} catch (XMLStreamException e) {
+			fail("XMLStreamException: XML parsing error.");
+		}
 
 		//results
 		Map<String, VehicleType> results = report.getIdentificationResults();
@@ -42,7 +52,14 @@ public class VehicleIdentifierTest {
 	@Test
 	public void testFile_Vehicles2Xml() {
 		VehicleIdentifier app = new VehicleIdentifier();
-		VehicleReport report = app.parseVehiclesXmlFile("vehicles2.xml");
+		VehicleReport report = null;
+		try {
+			report = app.parseVehiclesXmlFile("vehicles2.xml");
+		} catch (FileNotFoundException e) {
+			fail("FileNotFoundException: XML file not found.");
+		} catch (XMLStreamException e) {
+			fail("XMLStreamException: XML parsing error.");
+		}
 
 		//results
 		Map<String, VehicleType> results = report.getIdentificationResults();

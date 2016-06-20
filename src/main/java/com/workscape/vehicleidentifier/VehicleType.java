@@ -1,7 +1,9 @@
 package com.workscape.vehicleidentifier;
 
 /**
- * Created by Binu on 6/19/2016.
+ * This class represents possible VehicleTypes as enums with enum-properties defining the configuration of the VehicleType.
+ * This is a hard-coded but isolated configuration for VehicleTypes, and can be replaced with a more configurable mechanism
+ * such as property file or database in a real scenario.
  */
 public enum VehicleType {
     BIG_WHEEL(Vehicle.Material.PLASTIC, Vehicle.PowerTrain.HUMAN, Vehicle.Material.PLASTIC,

@@ -31,6 +31,11 @@ public class VehicleReport {
         this.summary = summary;
     }
 
+    /**
+     * Adds a vehicle and its type to the report
+     * @param vehicleId
+     * @param vehicleType
+     */
     public void addIdentificationResult(String vehicleId, VehicleType vehicleType) {
         removeIdentificationResult(vehicleId);
 
@@ -42,6 +47,10 @@ public class VehicleReport {
         summary.put(vehicleType, count);
     }
 
+    /**
+     * Removes a vehicle from the report
+     * @param vehicleId
+     */
     public void removeIdentificationResult(String vehicleId) {
         VehicleType existing = identificationResults.get(vehicleId);
 
