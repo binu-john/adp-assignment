@@ -47,10 +47,10 @@ public class VehicleIdentifier {
         }
 
         return parseVehiclesXml(fileInputStream);
-	}
+    }
 
     /**
-     * Given the filename (or full file path), reads and parses xml file for Vehicles and returns VehicleReport
+     * Given an InputStream, reads and parses xml file for Vehicles and returns VehicleReport
      * @param in
      * @return VehicleReport
      * @throws XMLStreamException

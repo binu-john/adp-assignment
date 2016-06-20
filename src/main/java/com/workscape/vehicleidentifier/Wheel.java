@@ -7,6 +7,14 @@ class Wheel {
     Vehicle.WheelPosition position;
     Vehicle.Material material;
 
+    public Wheel() {
+    }
+
+    public Wheel(Vehicle.WheelPosition position, Vehicle.Material material) {
+        this.position = position;
+        this.material = material;
+    }
+
     public Vehicle.WheelPosition getPosition() {
         return position;
     }

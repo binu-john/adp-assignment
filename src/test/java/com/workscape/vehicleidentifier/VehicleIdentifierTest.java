@@ -5,10 +5,15 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.fail;
 
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import javax.xml.stream.XMLStreamException;
+import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Map;
 
 /**
@@ -16,12 +21,40 @@ import java.util.Map;
  */
 public class VehicleIdentifierTest {
 
+    private VehicleIdentifier app;
+	private String vehicleXmlStr;
+
+	@Before
+	public void setup() {
+		String[] xmlElements = {
+				"<?xml version=\"1.0\" encoding=\"UTF-8\"?> ",
+				"<vehicles> ",
+				" <vehicle> ",
+				"  <id>Yamaha</id> ",
+				"   <frame> <material>metal</material> </frame> ",
+				"   <wheels> ",
+				"    <wheel> <position>rear</position> <material>metal</material> </wheel> ",
+				"    <wheel> <position>front</position> <material>metal</material> </wheel> ",
+				"   </wheels> ",
+				"   <powertrain> <Internal_Combustion /> </powertrain> ",
+				" </vehicle> ",
+				"</vehicles> "
+		};
+
+        this.app = new VehicleIdentifier();
+
+        StringBuilder sb = new StringBuilder();
+        for(String element : xmlElements) {
+            sb.append(element);
+        }
+        this.vehicleXmlStr = sb.toString();
+	}
+
 	/**
 	 * Test vehicles.xml
 	 */
 	@Test
 	public void testFile_VehiclesXml() {
-		VehicleIdentifier app = new VehicleIdentifier();
 		VehicleReport report = null;
 		try {
 			report = app.parseVehiclesXmlFile("vehicles.xml");
@@ -51,7 +84,6 @@ public class VehicleIdentifierTest {
 	 */
 	@Test
 	public void testFile_Vehicles2Xml() {
-		VehicleIdentifier app = new VehicleIdentifier();
 		VehicleReport report = null;
 		try {
 			report = app.parseVehiclesXmlFile("vehicles2.xml");
@@ -80,4 +112,28 @@ public class VehicleIdentifierTest {
 		assertEquals(1, summary.get(VehicleType.CAR).intValue());
 		assertEquals(1, summary.get(VehicleType.UNKNOWN).intValue());
 	}
+
+    /**
+     * Test with inputstream
+     */
+    @Test
+    public void testXmlInputStream() {
+        InputStream is = new ByteArrayInputStream(vehicleXmlStr.getBytes());
+
+        VehicleReport report = null;
+        try {
+            report = app.parseVehiclesXml(is);
+        } catch (XMLStreamException e) {
+            e.printStackTrace();
+        }
+
+        //results
+        Map<String, VehicleType> results = report.getIdentificationResults();
+        assertEquals(VehicleType.MOTORCYCLE, results.get("Yamaha"));
+
+        //summary
+        Map<VehicleType, Integer> summary = report.getSummary();
+        assertEquals(1, summary.get(VehicleType.MOTORCYCLE).intValue());
+    }
+
 }
