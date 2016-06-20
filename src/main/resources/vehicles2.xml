@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vehicles>
+	<vehicle>
+		<id>vehicle 1</id>
+		<frame>
+			<material>plastic</material>
+		</frame>
+		<wheels>
+			<wheel>
+				<position>left rear</position>
+				<material>plastic</material>
+			</wheel>
+			<wheel>
+				<position>right rear</position>
+				<material>plastic</material>
+			</wheel>
+			<wheel>
+				<position>front</position>
+				<material>plastic</material>
+			</wheel>
+		</wheels>
+		<powertrain>
+			<human />
+		</powertrain>
+	</vehicle>
+	<vehicle>
+		<id>vehicle 2</id>
+		<frame>
+			<material>metal</material>
+		</frame>
+		<wheels>
+			<wheel>
+				<position>rear</position>
+				<material>metal</material>
+			</wheel>
+			<wheel>
+				<position>front</position>
+				<material>metal</material>
+			</wheel>
+		</wheels>
+		<powertrain>
+			<human />
+		</powertrain>
+	</vehicle>
+	<vehicle>
+		<id>vehicle 3</id>
+		<frame>
+			<material>metal</material>
+		</frame>
+		<wheels>
+			<wheel>
+				<position>rear</position>
+				<material>metal</material>
+			</wheel>
+			<wheel>
+				<position>front</position>
+				<material>metal</material>
+			</wheel>
+		</wheels>
+		<powertrain>
+			<Internal_Combustion />
+		</powertrain>
+	</vehicle>
+	<vehicle>
+		<id>vehicle 4</id>
+		<frame>
+			<material>plastic</material>
+		</frame>
+		<powertrain>
+			<BERNOULLI />
+		</powertrain>
+	</vehicle>
+	<vehicle>
+		<id>vehicle 5</id>
+		<frame>
+			<material>metal</material>
+		</frame>
+		<wheels>
+			<wheel>
+				<position>left rear</position>
+			</wheel>
+			<wheel>
+				<position>right rear</position>
+			</wheel>
+			<wheel>
+				<position>left front</position>
+			</wheel>
+			<wheel>
+				<position>right front</position>
+			</wheel>
+		</wheels>
+		<powertrain>
+			<internal_combustion/>
+		</powertrain>
+	</vehicle>
+	<vehicle>
+		<id>vehicle 6</id>
+		<frame>
+			<material>METAL</material>
+		</frame>
+		<wheels>
+			<wheel>
+				<position>REAR</position>
+				<material>METAL</material>
+			</wheel>
+			<wheel>
+				<position>FRONT</position>
+				<material>METAL</material>
+			</wheel>
+		</wheels>
+		<powertrain>
+			<HUMAN/>
+		</powertrain>
+	</vehicle>
+	<vehicle>
+		<id>vehicle 7</id>
+		<frame>
+			<material>plastic</material>
+		</frame>
+		<wheels>
+			<wheel>
+				<position>REAR</position>
+				<material>METAL</material>
+			</wheel>
+			<wheel>
+				<position>FRONT</position>
+				<material>METAL</material>
+			</wheel>
+		</wheels>
+		<powertrain>
+			<HUMAN/>
+		</powertrain>
+	</vehicle>
+</vehicles>
